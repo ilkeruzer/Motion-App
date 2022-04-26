@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.floatingActionButton.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToMotionFragment()
+            val action = HomeFragmentDirections.actionHomeFragmentToMotionFragment(true)
             findNavController().navigate(action)
         }
     }

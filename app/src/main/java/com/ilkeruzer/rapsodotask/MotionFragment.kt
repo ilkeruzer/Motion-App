@@ -17,7 +17,11 @@ import com.ilkeruzer.rapsodotask.data.MotionCoordinates
 import com.ilkeruzer.rapsodotask.data.MotionDatabase
 import com.ilkeruzer.rapsodotask.data.MotionEntity
 import com.ilkeruzer.rapsodotask.databinding.FragmentMotionBinding
-import kotlinx.coroutines.*
+import com.ilkeruzer.rapsodotask.extentions.setGone
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class MotionFragment : Fragment(), SensorEventListener {
@@ -28,6 +32,7 @@ class MotionFragment : Fragment(), SensorEventListener {
     private var accel: Sensor? = null
 
     private var count = MutableLiveData<Int>()
+    private var isNew = false;
 
     companion object {
         private const val TAG = "MotionFragment"
@@ -35,11 +40,8 @@ class MotionFragment : Fragment(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initSensor()
 
         initMotionDb()
-
-
     }
 
     private fun setUpCountDownTimer() {
@@ -71,8 +73,10 @@ class MotionFragment : Fragment(), SensorEventListener {
     }
 
     private fun initSensor() {
-        manager = context?.getSystemService(AppCompatActivity.SENSOR_SERVICE) as SensorManager
-        accel = manager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        if (isNew) {
+            manager = context?.getSystemService(AppCompatActivity.SENSOR_SERVICE) as SensorManager
+            accel = manager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        }
     }
 
     override fun onCreateView(
@@ -80,13 +84,30 @@ class MotionFragment : Fragment(), SensorEventListener {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
+        argIsNew()
+        initSensor()
         binding = FragmentMotionBinding.inflate(layoutInflater,container,false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpCountDownTimer()
+        checkView()
+    }
+
+    private fun checkView() {
+        if (!isNew) {
+            binding.countTextview.setGone()
+        } else {
+            setUpCountDownTimer()
+        }
+    }
+
+    private fun argIsNew() {
+        arguments?.let {
+            isNew = it.getBoolean("isNew")
+        }
+
     }
 
     override fun onSensorChanged(event: SensorEvent) {
@@ -96,19 +117,23 @@ class MotionFragment : Fragment(), SensorEventListener {
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG,"onResume")
-        manager!!.registerListener(
-            this, accel,
-            SensorManager.SENSOR_DELAY_GAME
-        )
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG,"onStart")
+        if (isNew)
+            manager!!.registerListener(
+                this, accel,
+                SensorManager.SENSOR_DELAY_GAME
+            )
     }
 
     override fun onPause() {
         super.onPause()
         Log.d(TAG,"onPause")
-        manager!!.unregisterListener(this)
+        if (isNew) {
+            manager!!.unregisterListener(this)
+        }
     }
 
 
