@@ -13,7 +13,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.room.Room
+import com.ilkeruzer.rapsodotask.data.MotionDatabase
+import com.ilkeruzer.rapsodotask.data.MotionEntity
 import com.ilkeruzer.rapsodotask.databinding.FragmentMotionBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class MotionFragment : Fragment(), SensorEventListener {
@@ -29,10 +36,29 @@ class MotionFragment : Fragment(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initSensor()
 
+        initMotionDb()
+
+    }
+
+    private fun initMotionDb() {
+        val db = MotionDatabase.create(requireContext())
+
+        val motionDao = db.motionDao()
+
+        runBlocking {
+            launch(Dispatchers.IO) {
+                val motions: List<MotionEntity> = motionDao.getAllMotions()
+                Log.d(TAG, motions.size.toString())
+            }
+        }
+
+    }
+
+    private fun initSensor() {
         manager = context?.getSystemService(AppCompatActivity.SENSOR_SERVICE) as SensorManager
         accel = manager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-
     }
 
     override fun onCreateView(
