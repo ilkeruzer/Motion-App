@@ -3,11 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/motionFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/motionFragment"
         android:name="com.ilkeruzer.rapsodotask.MotionFragment"
         android:label="fragment_motion"
         tools:layout="@layout/fragment_motion" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.ilkeruzer.rapsodotask.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_motionFragment"
+            app:destination="@id/motionFragment" />
+    </fragment>
 </navigation>
