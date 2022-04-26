@@ -6,6 +6,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MotionFragment">
 
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/countTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="35sp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="10" />
+
     <com.ilkeruzer.rapsodotask.ShakeBallView
         android:id="@+id/shakeBallView"
         android:layout_width="match_parent"

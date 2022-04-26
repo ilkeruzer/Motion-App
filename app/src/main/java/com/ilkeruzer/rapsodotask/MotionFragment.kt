@@ -11,13 +11,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import com.ilkeruzer.rapsodotask.data.MotionCoordinates
 import com.ilkeruzer.rapsodotask.data.MotionDatabase
 import com.ilkeruzer.rapsodotask.data.MotionEntity
 import com.ilkeruzer.rapsodotask.databinding.FragmentMotionBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 
 class MotionFragment : Fragment(), SensorEventListener {
@@ -26,6 +26,8 @@ class MotionFragment : Fragment(), SensorEventListener {
 
     private var manager: SensorManager? = null
     private var accel: Sensor? = null
+
+    private var count = MutableLiveData<Int>()
 
     companion object {
         private const val TAG = "MotionFragment"
@@ -37,6 +39,20 @@ class MotionFragment : Fragment(), SensorEventListener {
 
         initMotionDb()
 
+
+    }
+
+    private fun setUpCountDownTimer() {
+        lifecycleScope.launch {
+            for (i in 10 downTo 0) {
+                count.postValue(i)
+                delay(1000L)
+            }
+        }
+
+        count.observe(viewLifecycleOwner) {
+            binding.countTextview.text = it.toString()
+        }
     }
 
     private fun initMotionDb() {
@@ -66,6 +82,11 @@ class MotionFragment : Fragment(), SensorEventListener {
         // Inflate the layout for this fragment
         binding = FragmentMotionBinding.inflate(layoutInflater,container,false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpCountDownTimer()
     }
 
     override fun onSensorChanged(event: SensorEvent) {
