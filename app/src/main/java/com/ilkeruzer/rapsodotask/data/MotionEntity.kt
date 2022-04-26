@@ -7,7 +7,7 @@ import androidx.room.TypeConverters
 
 @Entity(tableName = "motion")
 data class MotionEntity(
-    @PrimaryKey val uid: Int,
+    @PrimaryKey(autoGenerate = true) val uid: Int? = null,
 
     @ColumnInfo (name = "coordinates")
     @TypeConverters(MotionCoordinates::class)
