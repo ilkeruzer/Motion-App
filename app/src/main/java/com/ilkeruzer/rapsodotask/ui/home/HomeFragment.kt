@@ -5,18 +5,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.ilkeruzer.rapsodotask.data.local.model.MotionEntity
 import com.ilkeruzer.rapsodotask.databinding.FragmentHomeBinding
+import com.ilkeruzer.rapsodotask.databinding.ItemMotionLayoutBinding
+import com.ilkeruzer.rapsodotask.ui.adapter.MotionAdapter
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 
-class HomeFragment : Fragment() {
+@AndroidEntryPoint
+class HomeFragment : Fragment(), MotionAdapter.MotionClickListener {
 
     private lateinit var binding: FragmentHomeBinding
+    private val mViewModel: HomeViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    @Inject
+    lateinit var motionAdapter: MotionAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,9 +39,30 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.floatingActionButton.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToMotionFragment(true)
-            findNavController().navigate(action)
+            navigateMotionFragment(true)
         }
+
+        initPagingAdapter()
+    }
+
+    private fun initPagingAdapter() {
+        motionAdapter.motionClickListener = this@HomeFragment
+        binding.motionRecyclerView.adapter = motionAdapter
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            mViewModel.getMotions().collectLatest {
+                motionAdapter.submitData(it)
+            }
+        }
+    }
+
+    private fun navigateMotionFragment(isNew: Boolean, motion: MotionEntity? = null) {
+        val action = HomeFragmentDirections.actionHomeFragmentToMotionFragment(isNew)
+        findNavController().navigate(action)
+    }
+
+    override fun onMotionClicked(binding: ItemMotionLayoutBinding, motion: MotionEntity) {
+        navigateMotionFragment(false, motion)
     }
 
 }
