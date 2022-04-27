@@ -41,7 +41,7 @@ class HomeFragment : Fragment(), MotionAdapter.MotionClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         binding.floatingActionButton.setOnClickListener {
-            navigateMotionFragment(true)
+            navigateMotionFragment()
         }
 
         initPagingAdapter()
@@ -58,15 +58,15 @@ class HomeFragment : Fragment(), MotionAdapter.MotionClickListener {
         }
     }
 
-    private fun navigateMotionFragment(isNew: Boolean, motion: MotionEntity? = null) {
-        val action = HomeFragmentDirections.actionHomeFragmentToMotionFragment(isNew)
+    private fun navigateMotionFragment(motion: MotionEntity? = null) {
+        val action = HomeFragmentDirections.actionHomeFragmentToMotionFragment(motion)
         findNavController().navigate(action)
     }
 
     override fun onMotionClicked(binding: ItemMotionLayoutBinding, motion: MotionEntity) {
         lifecycleScope.launch {
             delay(150)
-            navigateMotionFragment(false, motion)
+            navigateMotionFragment(motion)
         }
 
     }

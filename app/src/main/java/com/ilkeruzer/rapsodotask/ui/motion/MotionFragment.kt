@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.ilkeruzer.rapsodotask.data.local.model.MotionCoordinates
 import com.ilkeruzer.rapsodotask.databinding.FragmentMotionBinding
 import com.ilkeruzer.rapsodotask.extentions.setGone
@@ -29,9 +30,15 @@ class MotionFragment : Fragment(), SensorEventListener {
     private var manager: SensorManager? = null
     private var accel: Sensor? = null
 
+    private val args: MotionFragmentArgs by navArgs()
+
 
     companion object {
         private const val TAG = "MotionFragment"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
 
@@ -90,10 +97,8 @@ class MotionFragment : Fragment(), SensorEventListener {
     }
 
     private fun argIsNew() {
-        arguments?.let {
-            mViewModel.isNew = it.getBoolean("isNew")
-        }
-
+        mViewModel.motionEntity = args.motion
+        mViewModel.isNew = mViewModel.motionEntity == null
     }
 
     override fun onSensorChanged(event: SensorEvent) {

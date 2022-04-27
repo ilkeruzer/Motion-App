@@ -18,6 +18,7 @@ class MotionViewModel @Inject constructor(
 
     var count = MutableLiveData<Int>()
     var isNew = false;
+    var motionEntity: MotionEntity? = null
     var motionCoordinates = arrayListOf<MotionCoordinates>()
 
     fun saveMotions() {
