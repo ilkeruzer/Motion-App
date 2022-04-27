@@ -41,7 +41,7 @@ class MotionAdapter @Inject constructor():
         }
 
         fun bind(item: MotionEntity) = with(binding) {
-            textView.text = item.uid.toString()
+            motionTextview.text = item.uid.toString()
         }
     }
 
