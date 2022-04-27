@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ilkeruzer.rapsodotask.data.local.model.MotionCoordinates
 import com.ilkeruzer.rapsodotask.databinding.FragmentMotionBinding
@@ -56,10 +57,8 @@ class MotionFragment : Fragment(), SensorEventListener {
             if (it == 0) {
                 mViewModel.isNew = false
                 manager!!.unregisterListener(this)
-
                 mViewModel.saveMotions()
-
-
+                findNavController().popBackStack()
             }
         }
     }
@@ -86,6 +85,19 @@ class MotionFragment : Fragment(), SensorEventListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkView()
+        replayMotion()
+    }
+
+    private fun replayMotion() {
+        with(mViewModel) {
+            lifecycleScope.launch {
+                if (!mViewModel.isNew)
+                motionEntity?.coordinates?.forEach {
+                    delay(32)
+                    binding.shakeBallView.move(it.positionX,it.positionY)
+                }
+            }
+        }
     }
 
     private fun checkView() {
