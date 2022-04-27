@@ -1,4 +1,4 @@
-package com.ilkeruzer.rapsodotask.data
+package com.ilkeruzer.rapsodotask.data.local.model
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

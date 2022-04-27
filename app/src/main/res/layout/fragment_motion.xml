@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MotionFragment">
+    tools:context=".ui.motion.MotionFragment">
 
 
     <com.google.android.material.textview.MaterialTextView
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="10" />
 
-    <com.ilkeruzer.rapsodotask.ShakeBallView
+    <com.ilkeruzer.rapsodotask.widget.ShakeBallView
         android:id="@+id/shakeBallView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,4 +1,4 @@
-package com.ilkeruzer.rapsodotask
+package com.ilkeruzer.rapsodotask.widget
 
 import android.content.Context
 import android.graphics.Canvas
@@ -6,6 +6,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.util.AttributeSet
 import android.view.View
+import com.ilkeruzer.rapsodotask.R
 
 class ShakeBallView(context: Context, attrs: AttributeSet?): View(context, attrs) {
 
@@ -125,8 +126,7 @@ class ShakeBallView(context: Context, attrs: AttributeSet?): View(context, attrs
             (ballY + BALL_DEFAULT_DIAMETER)
         )
 
-
-
+        invalidate()
     }
 
 

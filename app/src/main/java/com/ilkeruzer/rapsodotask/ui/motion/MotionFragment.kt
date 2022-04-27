@@ -1,4 +1,4 @@
-package com.ilkeruzer.rapsodotask
+package com.ilkeruzer.rapsodotask.ui.motion
 
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -11,69 +11,55 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.ilkeruzer.rapsodotask.data.MotionCoordinates
-import com.ilkeruzer.rapsodotask.data.MotionDatabase
-import com.ilkeruzer.rapsodotask.data.MotionEntity
+import com.ilkeruzer.rapsodotask.data.local.model.MotionCoordinates
 import com.ilkeruzer.rapsodotask.databinding.FragmentMotionBinding
 import com.ilkeruzer.rapsodotask.extentions.setGone
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
-
+@AndroidEntryPoint
 class MotionFragment : Fragment(), SensorEventListener {
 
     private lateinit var binding: FragmentMotionBinding
+    private val mViewModel: MotionViewModel by viewModels()
 
     private var manager: SensorManager? = null
     private var accel: Sensor? = null
 
-    private var count = MutableLiveData<Int>()
-    private var isNew = false;
 
     companion object {
         private const val TAG = "MotionFragment"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        initMotionDb()
-    }
 
     private fun setUpCountDownTimer() {
         lifecycleScope.launch {
             for (i in 10 downTo 0) {
-                count.postValue(i)
+                mViewModel.count.postValue(i)
                 delay(1000L)
             }
         }
 
-        count.observe(viewLifecycleOwner) {
+        mViewModel.count.observe(viewLifecycleOwner) {
             binding.countTextview.text = it.toString()
-        }
-    }
 
-    private fun initMotionDb() {
-        val db = MotionDatabase.create(requireContext())
+            if (it == 0) {
+                mViewModel.isNew = false
+                manager!!.unregisterListener(this)
 
-        val motionDao = db.motionDao()
+                mViewModel.saveMotions()
 
-        runBlocking {
-            launch(Dispatchers.IO) {
-                motionDao.insertMotion(MotionEntity(coordinates = arrayListOf(MotionCoordinates(1,2))))
-                val motions: List<MotionEntity> = motionDao.getAllMotions()
-                Log.d(TAG, motions.size.toString())
+
             }
         }
-
     }
 
+
     private fun initSensor() {
-        if (isNew) {
+        if (mViewModel.isNew) {
             manager = context?.getSystemService(AppCompatActivity.SENSOR_SERVICE) as SensorManager
             accel = manager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         }
@@ -96,7 +82,7 @@ class MotionFragment : Fragment(), SensorEventListener {
     }
 
     private fun checkView() {
-        if (!isNew) {
+        if (!mViewModel.isNew) {
             binding.countTextview.setGone()
         } else {
             setUpCountDownTimer()
@@ -105,14 +91,17 @@ class MotionFragment : Fragment(), SensorEventListener {
 
     private fun argIsNew() {
         arguments?.let {
-            isNew = it.getBoolean("isNew")
+            mViewModel.isNew = it.getBoolean("isNew")
         }
 
     }
 
     override fun onSensorChanged(event: SensorEvent) {
+        if (mViewModel.isNew) {
+            mViewModel.motionCoordinates.add(MotionCoordinates(event.values[0], event.values[1]))
+        }
         binding.shakeBallView.move(event.values[0], event.values[1])
-        binding.shakeBallView.invalidate()
+
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
@@ -121,7 +110,7 @@ class MotionFragment : Fragment(), SensorEventListener {
     override fun onStart() {
         super.onStart()
         Log.d(TAG,"onStart")
-        if (isNew)
+        if (mViewModel.isNew)
             manager!!.registerListener(
                 this, accel,
                 SensorManager.SENSOR_DELAY_GAME
@@ -131,7 +120,7 @@ class MotionFragment : Fragment(), SensorEventListener {
     override fun onPause() {
         super.onPause()
         Log.d(TAG,"onPause")
-        if (isNew) {
+        if (mViewModel.isNew) {
             manager!!.unregisterListener(this)
         }
     }
