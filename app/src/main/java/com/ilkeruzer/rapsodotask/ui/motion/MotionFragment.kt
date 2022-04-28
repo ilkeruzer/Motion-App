@@ -40,10 +40,6 @@ class MotionFragment : Fragment(), SensorEventListener {
         private const val TAG = "MotionFragment"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
 
     private fun setUpCountDownTimer() {
         lifecycleScope.launch {
@@ -94,10 +90,17 @@ class MotionFragment : Fragment(), SensorEventListener {
         with(mViewModel) {
             lifecycleScope.launch {
                 if (!mViewModel.isNew)
-                motionEntity?.coordinates?.forEach {
-                    delay(MOTION_REPLAY_DELAY)
-                    binding.shakeBallView.move(it.positionX,it.positionY)
-                }
+                    motionEntity?.coordinates?.forEachIndexed { index, motionCoordinates ->
+                        delay(MOTION_REPLAY_DELAY)
+                        binding.shakeBallView.move(
+                            motionCoordinates.positionX,
+                            motionCoordinates.positionY
+                        )
+
+                        if (index == motionEntity!!.coordinates!!.size - 1) {
+                            findNavController().popBackStack()
+                        }
+                    }
             }
         }
     }
