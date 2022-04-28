@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="10" />
 
-    <com.ilkeruzer.rapsodotask.widget.ShakeBallView
+    <com.ilkeruzer.rapsodotask.utils.widget.ShakeBallView
         android:id="@+id/shakeBallView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

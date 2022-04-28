@@ -8,6 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.ilkeruzer.rapsodotask.data.local.model.MotionEntity
 import com.ilkeruzer.rapsodotask.data.repository.MotionRepository
+import com.ilkeruzer.rapsodotask.utils.Constants.HOME_PAGING_SIZE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -19,7 +20,7 @@ class HomeViewModel @Inject constructor(
 
 
     fun getMotions(): Flow<PagingData<MotionEntity>> {
-        return Pager(PagingConfig(20)) {
+        return Pager(PagingConfig(HOME_PAGING_SIZE)) {
             repository.getAllMotion()
         }.flow.cachedIn(viewModelScope)
     }

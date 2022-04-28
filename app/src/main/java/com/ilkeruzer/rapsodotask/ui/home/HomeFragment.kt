@@ -12,6 +12,7 @@ import com.ilkeruzer.rapsodotask.data.local.model.MotionEntity
 import com.ilkeruzer.rapsodotask.databinding.FragmentHomeBinding
 import com.ilkeruzer.rapsodotask.databinding.ItemMotionLayoutBinding
 import com.ilkeruzer.rapsodotask.ui.adapter.MotionAdapter
+import com.ilkeruzer.rapsodotask.utils.Constants.HOME_PAGING_ITEM_CLICK_DELAY
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -65,7 +66,7 @@ class HomeFragment : Fragment(), MotionAdapter.MotionClickListener {
 
     override fun onMotionClicked(binding: ItemMotionLayoutBinding, motion: MotionEntity) {
         lifecycleScope.launch {
-            delay(150)
+            delay(HOME_PAGING_ITEM_CLICK_DELAY)
             navigateMotionFragment(motion)
         }
 

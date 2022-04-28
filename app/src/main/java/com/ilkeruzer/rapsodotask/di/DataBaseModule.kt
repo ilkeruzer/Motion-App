@@ -2,8 +2,8 @@ package com.ilkeruzer.rapsodotask.di
 
 import android.content.Context
 import androidx.room.Room
-import com.ilkeruzer.rapsodotask.data.local.MotionDao
 import com.ilkeruzer.rapsodotask.data.MotionDatabase
+import com.ilkeruzer.rapsodotask.utils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +21,7 @@ object DataBaseModule {
         return Room.databaseBuilder(
             appContext,
             MotionDatabase::class.java,
-            "motions.db"
+            Constants.MOTION_DB_NAME
         )
             .fallbackToDestructiveMigration()
             .build()

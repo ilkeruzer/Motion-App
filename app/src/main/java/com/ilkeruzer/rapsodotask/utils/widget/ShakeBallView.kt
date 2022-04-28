@@ -1,4 +1,4 @@
-package com.ilkeruzer.rapsodotask.widget
+package com.ilkeruzer.rapsodotask.utils.widget
 
 import android.content.Context
 import android.graphics.Canvas

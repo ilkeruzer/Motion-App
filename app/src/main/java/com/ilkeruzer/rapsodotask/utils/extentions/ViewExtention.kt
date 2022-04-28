@@ -1,4 +1,4 @@
-package com.ilkeruzer.rapsodotask.extentions
+package com.ilkeruzer.rapsodotask.utils.extentions
 
 import android.view.View
 

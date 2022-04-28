@@ -17,7 +17,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ilkeruzer.rapsodotask.data.local.model.MotionCoordinates
 import com.ilkeruzer.rapsodotask.databinding.FragmentMotionBinding
-import com.ilkeruzer.rapsodotask.extentions.setGone
+import com.ilkeruzer.rapsodotask.utils.Constants.MOTION_COUNT_DOWN_TIMER_DELAY
+import com.ilkeruzer.rapsodotask.utils.Constants.MOTION_REPLAY_DELAY
+import com.ilkeruzer.rapsodotask.utils.extentions.setGone
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -47,7 +49,7 @@ class MotionFragment : Fragment(), SensorEventListener {
         lifecycleScope.launch {
             for (i in 10 downTo 0) {
                 mViewModel.count.postValue(i)
-                delay(1000L)
+                delay(MOTION_COUNT_DOWN_TIMER_DELAY)
             }
         }
 
@@ -93,7 +95,7 @@ class MotionFragment : Fragment(), SensorEventListener {
             lifecycleScope.launch {
                 if (!mViewModel.isNew)
                 motionEntity?.coordinates?.forEach {
-                    delay(32)
+                    delay(MOTION_REPLAY_DELAY)
                     binding.shakeBallView.move(it.positionX,it.positionY)
                 }
             }
