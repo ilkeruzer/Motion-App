@@ -53,6 +53,7 @@ class HomeFragment : Fragment(), MotionAdapter.MotionClickListener {
         binding.motionRecyclerView.adapter = motionAdapter
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+
             mViewModel.getMotions().collectLatest {
                 motionAdapter.submitData(it)
             }

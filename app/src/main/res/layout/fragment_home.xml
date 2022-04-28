@@ -20,6 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="20"
+        android:layoutAnimation="@anim/layout_animation"
         tools:listitem="@layout/item_motion_layout" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
