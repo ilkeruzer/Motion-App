@@ -8,18 +8,23 @@ import android.graphics.RectF
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import com.ilkeruzer.rapsodotask.R
+import kotlin.math.*
 
-class ShakeBallView(context: Context, attrs: AttributeSet?): View(context, attrs) {
+class ShakeBallView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     private lateinit var ballDraw: ShapeDrawable
 
     private val defaultBallWidth = resources.getDimensionPixelSize(R.dimen.shake_ball_default_with)
-    private val defaultBallHeight = resources.getDimensionPixelSize(R.dimen.shake_ball_default_height)
+    private val defaultBallHeight =
+        resources.getDimensionPixelSize(R.dimen.shake_ball_default_height)
 
     private var ballX = 0
     private var ballY = 0
+    private val rShakeBall = BALL_DEFAULT_DIAMETER / 2
+    private var circleRectF = RectF()
 
     private val ovalPaint = Paint()
 
@@ -27,7 +32,7 @@ class ShakeBallView(context: Context, attrs: AttributeSet?): View(context, attrs
     companion object {
         private const val BALL_DEFAULT_DIAMETER = 100
         private const val OVAL_STROKE_WIDTH = 5F
-        private const val OVAL_DIAMETER = BALL_DEFAULT_DIAMETER / 2F
+        private const val SHAKE_BALL_VIEW_BIG_CIRCLE_DIAMETER = 400F
     }
 
     init {
@@ -50,12 +55,7 @@ class ShakeBallView(context: Context, attrs: AttributeSet?): View(context, attrs
         super.onDraw(canvas)
         ballDraw.draw(canvas)
 
-        canvas.drawCircle(
-            (width/2).toFloat(),
-            (height/2).toFloat(),
-            OVAL_DIAMETER,
-            ovalPaint
-        )
+        canvas.drawOval(circleRectF, ovalPaint);
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -80,20 +80,32 @@ class ShakeBallView(context: Context, attrs: AttributeSet?): View(context, attrs
         }
 
 
-        setMeasuredDimension(width,height)
+        setMeasuredDimension(width, height)
 
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         setBallScreenCenter()
+        initCircleRect()
         invalidate()
     }
 
+    private fun initCircleRect() {
+        val height: Int = height / 2
+        val width: Int = width / 2
+
+        circleRectF.set(
+            width - SHAKE_BALL_VIEW_BIG_CIRCLE_DIAMETER,
+            height - SHAKE_BALL_VIEW_BIG_CIRCLE_DIAMETER,
+            width + SHAKE_BALL_VIEW_BIG_CIRCLE_DIAMETER,
+            height + SHAKE_BALL_VIEW_BIG_CIRCLE_DIAMETER
+        )
+    }
+
     private fun setBallScreenCenter() {
-        val r = BALL_DEFAULT_DIAMETER / 2
-        ballX = (width / 2) - r
-        ballY = (height / 2) - r
+        ballX = (width / 2) - rShakeBall
+        ballY = (height / 2) - rShakeBall
 
         ballDraw.setBounds(
             ballX,
@@ -106,36 +118,34 @@ class ShakeBallView(context: Context, attrs: AttributeSet?): View(context, attrs
 
     fun move(f: Float, g: Float) {
 
+        var oldX = ballX
+        var oldY = ballY
+
         ballX = ((ballX - f).toInt())
         ballY = ((ballY + g).toInt())
 
+        Log.d("coordinates old ", "${ballX - (width / 2) + rShakeBall} ${ballY - (height / 2) + rShakeBall}")
 
-        //top x sınırları geçtiyse
-        when {
-            ballX > width - BALL_DEFAULT_DIAMETER -> {
-                ballX = width - BALL_DEFAULT_DIAMETER - 1
+        val r = (SHAKE_BALL_VIEW_BIG_CIRCLE_DIAMETER - rShakeBall).toDouble()
+        val r2 = r.pow(2.0)
+        val x2 = ((ballX - (width / 2) + rShakeBall).toDouble()).pow(2.0)
+        val y2 = ((ballY - (height / 2) + rShakeBall).toDouble()).pow(2.0)
+
+        if ((x2 + y2) > r2) {
+            if (ballX - (width / 2) + rShakeBall > 0) {
+                oldX -= 1
+            } else {
+                oldX += 1
             }
-            ballX < 0 -> {
-                ballX = 1
-            }
-            ballX == 0 -> {
-                ballX = ballX
-            }
+
+            if (ballY - (height / 2) + rShakeBall > 0) {
+                oldY -= 1
+            } else
+                oldY += 1
+
+            ballY = oldY
+            ballX = oldX
         }
-
-        //top y sınırlarını geçtiyse
-        when {
-            ballY > height - BALL_DEFAULT_DIAMETER -> {
-                ballY = height - BALL_DEFAULT_DIAMETER - 1
-            }
-            ballY < 0 -> {
-                ballY = 1
-            }
-            ballY == 0 -> {
-                ballY = ballY
-            }
-        }
-
 
         ballDraw.setBounds(
             ballX,
@@ -144,10 +154,9 @@ class ShakeBallView(context: Context, attrs: AttributeSet?): View(context, attrs
             (ballY + BALL_DEFAULT_DIAMETER)
         )
 
+
         invalidate()
     }
-
-
 
 
 }
