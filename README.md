@@ -1,5 +1,5 @@
 ## Motion App ⛳
-Motion App that allows the ball to move within the specified limits based on phone movement.
+Motion App, which allows the ball to move within the specified limits, depending on the movement of the phone, and to record and replay them.
 
 ## Tech stack and whys 🏗
 * [Kotlin](https://kotlinlang.org/) - Google officially supports Kotlin on Android as a “first-class” language and it has [a lot of benefits](https://developer.android.com/kotlin)
