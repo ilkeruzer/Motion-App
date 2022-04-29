@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ilkeruzer.rapsodotask">
+    package="com.ilkeruzer.motionApp">
 
     <application
         android:allowBackup="true"
@@ -8,10 +8,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".MotionApplication"
-        android:theme="@style/Theme.RapsodoTask">
+        android:name="com.ilkeruzer.motionApp.MotionApplication"
+        android:theme="@style/Theme.MotionApp">
         <activity
-            android:name=".MainActivity"
+            android:name="com.ilkeruzer.motionApp.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

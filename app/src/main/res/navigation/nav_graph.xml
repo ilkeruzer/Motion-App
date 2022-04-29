@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.ilkeruzer.rapsodotask.ui.home.HomeFragment"
+        android:name="com.ilkeruzer.motionApp.ui.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
 
@@ -22,13 +22,13 @@
 
     <fragment
         android:id="@+id/motionFragment"
-        android:name="com.ilkeruzer.rapsodotask.ui.motion.MotionFragment"
+        android:name="com.ilkeruzer.motionApp.ui.motion.MotionFragment"
         android:label="fragment_motion"
         tools:layout="@layout/fragment_motion" >
 
         <argument
             android:name="motion"
-            app:argType="com.ilkeruzer.rapsodotask.data.local.model.MotionEntity"
+            app:argType="com.ilkeruzer.motionApp.data.local.model.MotionEntity"
             app:nullable="true" />
     </fragment>
 
