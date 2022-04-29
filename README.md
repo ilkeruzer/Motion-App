@@ -10,4 +10,4 @@ Motion App that allows the ball to move within the specified limits based on pho
 * [Jetpack Components](https://developer.android.com/jetpack) - Navigation, Room, Paging, ViewModel and more
 
 ## Screenshots 📷
-<img src="/arts/home-screen.png" width="260"> &emsp;<img src="/arts/home-screen.png" width="260">
+<img src="/arts/home-screen.png" width="260"> &emsp;<img src="/arts/motion-screen.png" width="260">
